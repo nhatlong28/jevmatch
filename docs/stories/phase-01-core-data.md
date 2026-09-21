@@ -37,6 +37,24 @@ UI, recruiter login flow, file extraction, provider calls, and scoring logic.
 
 ## Proof and exit gate
 
-Migration reset succeeds; positive and negative RLS tests pass; domain validator
-tests pass; generated database types and source types agree. Phase 02 may begin
-only after these checks are repeatable locally.
+Migration deployment succeeds against the linked non-production Supabase Cloud
+project; positive and negative linked-project RLS tests pass; domain validator
+tests pass; generated Cloud database types and source types agree. Phase 02 may
+begin only after these checks are repeatable without a local Supabase stack.
+
+## Exit evidence — 2026-09-21
+
+- Linked Cloud migration `20260921084337_phase_01_core_data` is applied.
+- The `core_schema` pgTAP suite passed all 8 assertions against Cloud.
+- The `rls` pgTAP suite passed all 6 assertions against Cloud, including
+  cross-recruiter denial and anonymous reads of persisted private Storage
+  objects. Both suites executed in transactions and rolled back their fixtures.
+- `src/lib/supabase/database.types.ts` was generated from the linked Cloud
+  public schema; source Job and Application lifecycle types reference those
+  generated enums.
+- Security advisors returned no findings. Performance advisors report only two
+  informational unused-index notices on this otherwise empty project.
+- Re-run the Cloud CLI proof with `npm run db:test`; this contacts the linked
+  Cloud database and uses Docker only for the `pg_prove` client, not a local
+  Supabase stack. The same SQL suites were verified through the Supabase MCP
+  transaction runner in this completion check.

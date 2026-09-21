@@ -51,7 +51,7 @@ produces the final Match Score.
 
 The packet index in `docs/stories/README.md` owns phase order and exit gates.
 
-1. [in progress] Phase 01 — core types, schema, private Storage, and RLS.
+1. [complete] Phase 01 — core types, schema, private Storage, and RLS.
 2. [pending] Phase 02 — Supabase recruiter authentication.
 3. [pending] Phase 03 — draft Job and JD processing.
 4. [pending] Phase 04 — OpenAI Evaluation Plan draft generation.
@@ -114,3 +114,23 @@ change, and unfinished work stays documented here until its validation passes.
 - 2026-09-21: Froze feature implementation, derived living product documents from
   `SPEC.md`, added ten dependency-ordered story packets, recorded unresolved
   decision gates, and preserved the current UI as the Phase 10 visual prototype.
+- 2026-09-21: Began Phase 01 domain types, manual Evaluation Plan validation,
+  Cloud-ready migrations, private buckets, RLS policies, and pgTAP proof. The
+  product owner selected Supabase Cloud only, so local Docker lifecycle commands
+  and port configuration were removed. Cloud deployment, linked RLS tests, and
+  Cloud-generated type agreement remain before Phase 01 can complete.
+- 2026-09-21: The product owner identified the Supabase Cloud project as
+  `jev-match`. Repository tests, typecheck, lint, and production build pass, but
+  this task has Supabase skills without the authenticated MCP database tools;
+  the CLI is also unauthenticated. The migration has not been applied to Cloud,
+  linked pgTAP has not run, and Cloud database types have not been generated.
+- 2026-09-21: Strengthened the Phase 01 Storage RLS proof so anonymous access is
+  denied for persisted objects, not merely for an empty bucket. Local repository
+  checks remain green; Cloud deployment is still pending an authenticated
+  database connection in this task.
+- 2026-09-21: Completed Phase 01 against the linked Supabase Cloud project.
+  Migration `20260921084337` is present remotely; Cloud pgTAP schema (8) and
+  RLS/Storage (6) checks passed inside rolled-back transactions. Generated
+  public-schema types now back the source lifecycle status types. Security
+  advisors reported no findings; the two performance notices are expected
+  unused-index information for a new, empty project.

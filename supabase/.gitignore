@@ -1,0 +1,3 @@
+# Supabase CLI state; Cloud project linkage is machine-local.
+.branches/
+.temp/
