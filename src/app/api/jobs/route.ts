@@ -8,6 +8,7 @@ import {
 } from "@/lib/job-descriptions";
 import { getCurrentRecruiter } from "@/lib/auth/recruiter";
 import { createClient } from "@/lib/supabase/server";
+import { validateEvaluationPlan } from "@/lib/domain/evaluation-plan";
 
 function extensionFor(mimeType: string) {
   if (mimeType === "application/pdf") return "pdf";
@@ -25,6 +26,8 @@ export async function POST(request: Request) {
   const title = String(formData.get("title") ?? "").trim();
   const pastedText = String(formData.get("jdText") ?? "");
   const uploadedFile = formData.get("jdFile");
+  const action = String(formData.get("action") ?? "save-draft");
+  const planJson = String(formData.get("evaluationPlan") ?? "");
   const hasPastedText = Boolean(pastedText.trim());
   const hasFile = uploadedFile instanceof File && uploadedFile.size > 0;
 
@@ -37,6 +40,15 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+  if (action !== "save-draft" && action !== "publish") {
+    return NextResponse.json({ error: "Choose Save draft or Publish job." }, { status: 400 });
+  }
+  let plan: unknown;
+  try { plan = JSON.parse(planJson); } catch {
+    return NextResponse.json({ error: "Generate and review an evaluation plan first." }, { status: 400 });
+  }
+  const planValidation = validateEvaluationPlan(plan);
+  if (!planValidation.success) return NextResponse.json({ error: "Fix the evaluation plan before saving." }, { status: 400 });
 
   try {
     const description = await processJobDescription(
@@ -68,10 +80,12 @@ export async function POST(request: Request) {
     const { data: job, error: jobError } = await supabase
       .from("jobs")
       .insert({
+        evaluation_plan: planValidation.data,
         jd_file_path: path,
         jd_text: description.text,
+        public_slug: action === "publish" ? randomUUID().replaceAll("-", "").slice(0, 12) : null,
         recruiter_id: recruiter.id,
-        status: "draft",
+        status: action === "publish" ? "published" : "draft",
         title,
       })
       .select("id")

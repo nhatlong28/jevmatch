@@ -7,6 +7,7 @@ import {
   SearchIcon,
   SettingsIcon,
 } from "lucide-react";
+import Link from "next/link";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -145,9 +146,11 @@ export default function HomePage() {
                 Create, publish, and review role evaluations.
               </p>
             </div>
-            <Button>
-              <PlusIcon data-icon="inline-start" />
-              New job
+            <Button asChild>
+              <Link href="/jobs/new">
+                <PlusIcon data-icon="inline-start" />
+                New job
+              </Link>
             </Button>
           </header>
 

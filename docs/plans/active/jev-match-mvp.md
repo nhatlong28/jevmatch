@@ -56,7 +56,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 1. [complete] Phase 01 — core types, schema, private Storage, and RLS.
 2. [complete] Phase 02 — Supabase recruiter authentication.
 3. [complete] Phase 03 — draft Job and JD processing.
-4. [pending] Phase 04 — OpenAI Evaluation Plan draft generation.
+4. [complete] Phase 04 — OpenAI Evaluation Plan draft generation.
 5. [pending] Phase 05 — Evaluation Editor.
 6. [pending] Phase 06 — publish, immutable plan, public slug, and close.
 7. [pending] Phase 07 — public candidate application and CV processing.
@@ -164,3 +164,18 @@ change, and unfinished work stays documented here until its validation passes.
   the draft success state. Cloud verification confirmed the resulting owned
   draft and private file, and denied a cross-recruiter Storage write. Temporary
   users, Jobs, and Storage objects were removed after the checks.
+- 2026-09-21: Implemented Phase 04: server-only OpenAI generation with optional
+  trimmed base URL, manual output validation, owned-draft persistence, and a
+  generate/retry screen at `/jobs/[jobId]`. Unit tests (20), typecheck, lint,
+  production build, and a client-bundle secret identifier scan pass. A live
+  browser smoke test created a temporary authenticated draft but its provider
+  request did not return within the runner's 30-second limit; the temporary
+  user and its Jobs were removed. Keep the packet pending until successful
+  provider/browser generation is observed.
+- 2026-09-22: Completed Phase 04 after successful live provider/browser
+  generation. The new-job flow now preserves title and description after
+  generation, exposes typed editing for question IDs and Score criteria, and
+  places Upload/Publish actions in the accepted order. Unit tests (28),
+  typecheck, lint, production build, and the authenticated browser interaction
+  pass; linked Supabase tests were intentionally skipped per product-owner
+  direction.
