@@ -1,3 +1,35 @@
 # Harness core maintenance binary
 scripts/bin/harness
 scripts/bin/harness.exe
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local environment files
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# operating systems and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

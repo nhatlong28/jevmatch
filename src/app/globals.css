@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --muted-foreground: #64748b;
+  --muted: #f1f5f9;
+  --border: #dce3ed;
+  --input: #cbd5e1;
+  --ring: #0967f2;
+  --primary: #0967f2;
+  --primary-foreground: #ffffff;
+  --primary-soft: #eaf2ff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #334155;
+  --accent: #eaf2ff;
+  --accent-foreground: #0758d1;
+  --success: #159455;
+  --success-soft: #eaf8f0;
+  --warning: #b76a08;
+  --warning-soft: #fff5d9;
+  --destructive: #d92d20;
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition-duration: 150ms;
+  transition-property: color, background-color, border-color, box-shadow;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
