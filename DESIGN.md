@@ -147,9 +147,10 @@ read-only presentation.
 ### Candidate application
 
 Use a centered column no wider than 780px. Lead with company and role context,
-then one continuous application form. Resume upload, privacy copy, consent, and
-submission status must be obvious on mobile and desktop. Candidates never see
-match scores.
+then one continuous application form. Resume upload, privacy copy, and submission
+status must be obvious on mobile and desktop. The MVP form fields are only full
+name, email, and CV; phone, LinkedIn, or consent controls in a visual concept are
+sample content rather than requirements. Candidates never see match scores.
 
 ### Applications and candidate detail
 
@@ -183,4 +184,3 @@ selection state when returning to the list.
 - unsupported navigation destinations or product promises;
 - AI sparkle motifs or copy suggesting autonomous hiring decisions;
 - candidate-facing score, criterion evidence, or internal review state.
-

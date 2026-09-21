@@ -30,4 +30,5 @@ decision into `docs/decisions/`; keep task-local choices in the plan.
 
 ## Active Plans
 
-No active execution plans are currently indexed.
+- [`active/jev-match-mvp.md`](active/jev-match-mvp.md): phased Jev Match MVP
+  delivery coordinated through `docs/stories/`.

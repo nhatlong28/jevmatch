@@ -10,6 +10,8 @@ Start with the smallest authoritative surface.
   boundaries.
 - `HARNESS.md`: product principles and installed-core model.
 - `product/`: current product behavior and installation contract.
+- `stories/`: consumer-owned phase packets that bind product authority to
+  acceptance criteria and proof.
 - `decisions/`: lasting choices future work must inherit.
 - `plans/`: one durable working-memory document for work that needs it.
 - [`patterns/encoding-invariants.md`](patterns/encoding-invariants.md): turn
@@ -34,7 +36,7 @@ not overwrite those with upstream product assumptions.
 
 ## History
 
-The former SQLite control plane, protocol v1, story packets, migration evidence,
-and compatibility documentation are preserved by Git history and immutable
-`harness-cli-v*` tags. They are intentionally absent from the current tree so
-search and agent retrieval return current product authority.
+The former SQLite control plane, protocol v1 packet lifecycle, migration
+evidence, and compatibility documentation remain retired. The current
+`stories/` directory contains lightweight Jev Match delivery packets explicitly
+requested by the product owner; they do not restore that control plane.

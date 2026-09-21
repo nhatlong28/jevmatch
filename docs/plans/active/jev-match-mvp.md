@@ -2,10 +2,10 @@
 
 ## Outcome
 
-Deliver a production-capable Jev Match MVP that implements the product flows and
-constraints in `SPEC.md`: HR users create and publish evaluation plans, candidates
-submit resumes, Jev evaluates the evidence, and deterministic TypeScript scoring
-produces the final match score.
+Deliver a production-capable Jev Match MVP through the ordered packets in
+`docs/stories/`: recruiters create and publish evaluation plans, candidates
+submit resumes, Jev evaluates the resume, and deterministic TypeScript scoring
+produces the final Match Score.
 
 ## Scope
 
@@ -34,35 +34,36 @@ produces the final match score.
 
 ## Authority and decisions
 
-- Product behavior and externally observable policy: `SPEC.md`.
+- Accepted source baseline: `SPEC.md`.
+- Living product behavior and externally observable policy: `docs/product/`.
+- Phase scope, acceptance criteria, and proof: `docs/stories/`.
 - Repository workflow and quality gates: `AGENTS.md` and `docs/WORKFLOW.md`.
 - Product name: Jev Match.
 - AI plan drafting: official `openai` package with optional server-only base URL.
 - Resume evaluation: `@typesafe-ai/sdk`, `jev-latest`, and server-only credentials.
 - Final score: deterministic TypeScript logic; criterion importance is not sent
   to Jev.
-- Visual direction will be recorded as repository design guidance after concept
-  generation and before implementation.
+- Visual direction: `DESIGN.md` and `docs/design/concepts/`. The existing UI is a
+  preserved prototype to reuse, not evidence that its later product phase is
+  complete.
 
-## Milestones
+## Delivery phases
 
-1. [complete] Generate and inspect a coherent visual concept for every primary
-   MVP surface; extract the accepted design language into repository guidance.
-2. [in progress] Scaffold the Next.js application, shared layout, tokens, and reusable
-   shadcn/ui primitives.
-3. [pending] Implement domain types, validation, score normalization, weighted
-   aggregation, and unit tests.
-4. [pending] Add the Supabase schema, Storage policies, RLS policies, and policy
-   validation.
-5. [pending] Implement authentication, job creation, JD ingestion, and editable
-   AI-drafted evaluation plans.
-6. [pending] Implement plan publishing and immutable published-plan behavior.
-7. [pending] Implement public applications, resume extraction, Jev evaluation,
-   and deterministic scoring.
-8. [pending] Implement the HR application ranking and candidate-detail views with
-   signed resume access.
-9. [pending] Run static, unit, integration, security-boundary, build, and rendered
-   browser validation; resolve all material findings.
+The packet index in `docs/stories/README.md` owns phase order and exit gates.
+
+1. [in progress] Phase 01 — core types, schema, private Storage, and RLS.
+2. [pending] Phase 02 — Supabase recruiter authentication.
+3. [pending] Phase 03 — draft Job and JD processing.
+4. [pending] Phase 04 — OpenAI Evaluation Plan draft generation.
+5. [pending] Phase 05 — Evaluation Editor.
+6. [pending] Phase 06 — publish, immutable plan, public slug, and close.
+7. [pending] Phase 07 — public candidate application and CV processing.
+8. [pending] Phase 08 — TypeSafe/Jev evaluation.
+9. [pending] Phase 09 — deterministic normalization and scoring.
+10. [pending] Phase 10 — data-backed recruiter dashboard and candidate review.
+
+Cross-phase visual work is complete as a prototype and preserved for reuse. It
+does not advance a packet's status without that packet's behavior-level proof.
 
 ## Validation
 
@@ -110,3 +111,6 @@ change, and unfinished work stays documented here until its validation passes.
 - 2026-09-21: Completed five visual references and `DESIGN.md`; scaffolded Next.js
   16.3, React 19.3, Tailwind CSS 4.3, and shadcn/ui; implemented and browser-tested
   the responsive Jobs dashboard foundation.
+- 2026-09-21: Froze feature implementation, derived living product documents from
+  `SPEC.md`, added ten dependency-ordered story packets, recorded unresolved
+  decision gates, and preserved the current UI as the Phase 10 visual prototype.
