@@ -1,8 +1,8 @@
-# SPEC — Jev Recruit
+# SPEC — Jev Match
 
 ## 1. Tổng quan
 
-**Jev Recruit** là một ứng dụng tuyển dụng AI-first dành cho HR/recruiter.
+**Jev Match** là một ứng dụng tuyển dụng AI-first dành cho HR/recruiter.
 
 Mục tiêu chính:
 
@@ -140,10 +140,15 @@ Cả hai nên là private bucket.
 ## AI
 
 - LLM:
+  - sử dụng package `openai` chính thức cho TypeScript/JavaScript;
+  - chạy server-side;
+  - hỗ trợ `baseURL` tùy chọn cho OpenAI-compatible endpoint;
   - đọc JD text;
   - generate Evaluation Plan ban đầu.
 
 - Jev:
+  - sử dụng package `@typesafe-ai/sdk`;
+  - gọi `TypeSafeClient.systemOne` với model mặc định `jev-latest`;
   - đọc `resume`;
   - trả typed judgments theo Evaluation Plan.
 
@@ -521,6 +526,27 @@ LLM không generate:
 }
 ```
 
+## 10.5. LLM Client
+
+LLM integration sử dụng package `openai` chính thức và chỉ chạy server-side.
+
+```ts
+import OpenAI from "openai"
+
+const baseURL = process.env.LLM_BASE_URL?.trim()
+
+const llm = new OpenAI({
+  apiKey: process.env.LLM_API_KEY,
+  ...(baseURL ? { baseURL } : {}),
+})
+```
+
+`LLM_BASE_URL` là optional. Khi không được cấu hình, không truyền `baseURL`
+vào client để package `openai` sử dụng endpoint mặc định.
+
+Model được đọc từ `LLM_MODEL`. LLM response phải được chuyển thành
+`EvaluationPlan` và kiểm tra bằng validator TypeScript thủ công trước khi lưu.
+
 ---
 
 # 11. Evaluation Editor
@@ -708,20 +734,55 @@ Lý do:
 
 # 16. Jev Questions
 
-Backend convert Evaluation Plan thành `questions` object dùng cho Jev.
+Backend sử dụng `@typesafe-ai/sdk` để convert Evaluation Plan thành `questions`
+object dùng cho Jev.
 
 Concept:
 
 ```ts
+import {
+  noul,
+  score,
+  TypeSafeClient,
+} from "@typesafe-ai/sdk"
+
 function toJevQuestions(plan: EvaluationPlan) {
   return Object.fromEntries(
-    plan.questions.map((question) => [
-      question.id,
-      question.jev,
-    ])
+    plan.questions.map((question) => {
+      if (question.jev.type === "noul") {
+        return [
+          question.id,
+          noul(question.jev.instructions),
+        ] as const
+      }
+
+      const criteria = question.jev.criteria as [
+        string,
+        string,
+        ...string[],
+      ]
+
+      return [
+        question.id,
+        score(question.jev.instructions, criteria),
+      ] as const
+    })
   )
 }
+
+const jev = new TypeSafeClient()
+
+const response = await jev.systemOne({
+  state: {
+    resume: resumeText,
+  },
+  questions: toJevQuestions(evaluationPlan),
+})
 ```
+
+`TypeSafeClient` đọc API key từ `TYPESAFE_API_KEY` và mặc định dùng model
+`jev-latest`. Có thể override model bằng `TYPESAFE_DEFAULT_MODEL` mà không thay
+đổi Evaluation Plan.
 
 `importance` không gửi sang Jev.
 
@@ -1196,7 +1257,7 @@ calculateMatch(...)
 Simple Supabase Auth UI.
 
 ```text
-Jev Recruit
+Jev Match
 
 Email
 [________________]
@@ -1498,9 +1559,14 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 LLM_API_KEY=
 LLM_MODEL=
+LLM_BASE_URL=
 
-JEV_API_KEY=
+TYPESAFE_API_KEY=
+TYPESAFE_DEFAULT_MODEL=jev-latest
 ```
+
+`LLM_BASE_URL` là optional. Nếu để trống, application phải bỏ field `baseURL`
+khi khởi tạo OpenAI client.
 
 Không commit secrets.
 
@@ -1513,6 +1579,7 @@ Không commit secrets.
 - Candidate CV bucket private.
 - JD bucket private.
 - Service role key server-only.
+- `LLM_API_KEY` và `TYPESAFE_API_KEY` server-only.
 - Public apply endpoint validate:
   - slug;
   - Job status;
@@ -1773,7 +1840,7 @@ MVP được coi là hoàn thành khi:
 
 # 39. Summary
 
-Jev Recruit sử dụng mô hình:
+Jev Match sử dụng mô hình:
 
 ```text
 JD
