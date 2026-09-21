@@ -46,13 +46,15 @@ produces the final Match Score.
 - Visual direction: `DESIGN.md` and `docs/design/concepts/`. The existing UI is a
   preserved prototype to reuse, not evidence that its later product phase is
   complete.
+- Recruiter accounts are provisioned by an administrator in Supabase Auth; the
+  MVP does not expose self-service signup.
 
 ## Delivery phases
 
 The packet index in `docs/stories/README.md` owns phase order and exit gates.
 
 1. [complete] Phase 01 — core types, schema, private Storage, and RLS.
-2. [pending] Phase 02 — Supabase recruiter authentication.
+2. [complete] Phase 02 — Supabase recruiter authentication.
 3. [pending] Phase 03 — draft Job and JD processing.
 4. [pending] Phase 04 — OpenAI Evaluation Plan draft generation.
 5. [pending] Phase 05 — Evaluation Editor.
@@ -134,3 +136,19 @@ change, and unfinished work stays documented here until its validation passes.
   public-schema types now back the source lifecycle status types. Security
   advisors reported no findings; the two performance notices are expected
   unused-index information for a new, empty project.
+- 2026-09-21: The product owner selected pre-provisioned recruiter accounts for
+  the MVP, resolving the Phase 02 authentication decision gate.
+- 2026-09-21: Implemented the Phase 02 cookie-based Supabase Auth boundary:
+  sign-in, server-verified `/jobs`, token-refreshing Next.js Proxy, and sign-out.
+  Typecheck, lint, tests, and production build pass. Browser and Cloud Auth
+  verification remain pending provisioned recruiter credentials and public
+  Supabase configuration for this environment.
+- 2026-09-21: Completed Phase 02 against Supabase Cloud using temporary,
+  email-confirmed recruiter accounts that were deleted after verification.
+  Browser proof covered anonymous `/jobs` redirect, safe invalid-credential
+  feedback, valid sign-in, desktop/mobile protected rendering, sign-out, and
+  post-sign-out denial. Direct Cloud queries proved recruiter A could neither
+  read nor update recruiter B's temporary Job. The prior Cloud pgTAP proof
+  remains valid; its local rerun was unavailable because Docker Desktop was not
+  running. The current typecheck, lint, test suite, production build, and
+  client-bundle secret scan pass.

@@ -28,9 +28,8 @@ Match Score, resume text, other candidates, or internal review state.
 - Application ownership is derived through its Job.
 - RLS is mandatory; server-side checks supplement rather than replace it.
 
-Whether the MVP exposes self-service signup or uses provisioned recruiter
-accounts is not resolved by the source specification and must be decided before
-the authentication story is implemented.
+The MVP uses provisioned recruiter accounts. There is no self-service signup
+surface; an administrator creates recruiter accounts in Supabase Auth.
 
 ## Job lifecycle
 

@@ -17,17 +17,17 @@ Phase 01 schema and ownership policies.
 
 ## Scope
 
-- Supabase browser/server clients using the anon key where appropriate.
+- Supabase browser/server clients using the publishable key where appropriate.
 - Email/password sign-in and logout.
 - Server-side session enforcement for `/jobs` and descendants.
 - Redirect unauthenticated protected requests to `/sign-in`.
 - Ownership checks remain in RLS and server boundaries.
 
-## Decision gate
+## Accepted decision
 
-Before implementation, decide whether MVP exposes self-service signup or uses
-pre-provisioned recruiter accounts. The SPEC requires the final MVP to support a
-recruiter obtaining an account but does not define the signup surface.
+The MVP uses pre-provisioned recruiter accounts. The sign-in experience has no
+self-service signup path; administrators create recruiter accounts in Supabase
+Auth.
 
 ## Acceptance criteria
 

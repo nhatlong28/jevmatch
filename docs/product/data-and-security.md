@@ -25,9 +25,9 @@ jobs.recruiter_id`; they do not duplicate recruiter ID.
 
 - `job-descriptions` and `resumes` are private buckets.
 - CV access uses ownership-checked, temporary signed URLs.
-- `SUPABASE_SERVICE_ROLE_KEY`, `LLM_API_KEY`, and `TYPESAFE_API_KEY` are
+- `SUPABASE_SECRET_KEY`, `LLM_API_KEY`, and `TYPESAFE_API_KEY` are
   server-only and never use a `NEXT_PUBLIC_` prefix.
-- Only Supabase URL and anon key are public client configuration.
+- Only the Supabase URL and publishable key are public client configuration.
 - Secrets are never committed.
 
 ## Public boundary
