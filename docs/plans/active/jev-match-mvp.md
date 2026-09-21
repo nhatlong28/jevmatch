@@ -55,7 +55,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 
 1. [complete] Phase 01 — core types, schema, private Storage, and RLS.
 2. [complete] Phase 02 — Supabase recruiter authentication.
-3. [pending] Phase 03 — draft Job and JD processing.
+3. [complete] Phase 03 — draft Job and JD processing.
 4. [pending] Phase 04 — OpenAI Evaluation Plan draft generation.
 5. [pending] Phase 05 — Evaluation Editor.
 6. [pending] Phase 06 — publish, immutable plan, public slug, and close.
@@ -152,3 +152,15 @@ change, and unfinished work stays documented here until its validation passes.
   remains valid; its local rerun was unavailable because Docker Desktop was not
   running. The current typecheck, lint, test suite, production build, and
   client-bundle secret scan pass.
+- 2026-09-21: The product owner accepted the Phase 03 JD boundary: a 10 MB
+  limit, PDF/DOCX/TXT MIME plus signature validation, UTF-8 TXT (optional BOM),
+  and retry after extraction failure without creating a Job.
+- 2026-09-21: Completed Phase 03. The server upload boundary, raw-text
+  extraction, draft-creation interface, and owner-folder Storage policies are
+  implemented. Migration `20260921103000` is applied to Supabase Cloud; direct
+  Cloud pgTAP schema (8) and RLS/Storage (8) checks pass, as do advisors,
+  typecheck, lint, unit fixtures (16 tests), and production build. A headless
+  browser against `next start` verified recruiter sign-in, JD TXT upload, and
+  the draft success state. Cloud verification confirmed the resulting owned
+  draft and private file, and denied a cross-recruiter Storage write. Temporary
+  users, Jobs, and Storage objects were removed after the checks.

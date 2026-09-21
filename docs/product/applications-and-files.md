@@ -2,9 +2,13 @@
 
 ## Job Description processing
 
-The recruiter uploads PDF, DOCX, or TXT. The server validates the file, stores the
-original in the private `job-descriptions` bucket, extracts raw text, and passes
-only that text to the LLM. File parsers do not interpret hiring requirements.
+The recruiter can paste a Job Description or upload a PDF, DOCX, or TXT file.
+Uploads are limited to 10 MB. The server requires the declared MIME type and
+file signature to agree (`application/pdf`, DOCX, or `text/plain` UTF-8 with an
+optional BOM), stores the original in the private `job-descriptions` bucket,
+extracts raw text, and passes only that text to the LLM. File parsers do not
+interpret hiring requirements. If extraction fails, no Job is created and the
+recruiter can try again.
 
 ## Public application
 

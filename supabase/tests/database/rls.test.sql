@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(8);
 
 insert into auth.users (id, email)
 values
@@ -66,6 +66,24 @@ select results_eq(
   $$ select id from public.applications order by id $$,
   array['30000000-0000-0000-0000-000000000001'::uuid],
   'recruiter A reads only applications through their own jobs'
+);
+
+select lives_ok(
+  $$
+    insert into storage.objects (bucket_id, name)
+    values ('job-descriptions', '10000000-0000-0000-0000-000000000001/new-source.pdf')
+  $$,
+  'recruiter A can upload a job description in their own folder'
+);
+
+select throws_ok(
+  $$
+    insert into storage.objects (bucket_id, name)
+    values ('job-descriptions', '10000000-0000-0000-0000-000000000002/other-source.pdf')
+  $$,
+  '42501',
+  null,
+  'recruiter A cannot upload a job description into recruiter B folder'
 );
 
 select throws_ok(
