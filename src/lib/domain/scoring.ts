@@ -126,3 +126,72 @@ export function scoreEvaluations(
     matchScore: (weightedSum / totalWeight) * 100,
   };
 }
+
+export function parsePersistedEvaluations(
+  plan: EvaluationPlan,
+  value: unknown,
+): EvaluationResult[] | null {
+  if (!Array.isArray(value)) return null;
+
+  type PersistedEvaluation = ScoringInput & {
+    storedNormalizedScore: number;
+    storedImportance: string;
+    storedWeight: number;
+  };
+
+  const persisted = value.map((item) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      return null;
+    }
+
+    const record = item as Record<string, unknown>;
+    if (
+      typeof record.questionId !== "string"
+      || (record.type !== "noul" && record.type !== "score")
+      || typeof record.rawValue !== "number"
+      || typeof record.normalizedScore !== "number"
+      || typeof record.importance !== "string"
+      || typeof record.weight !== "number"
+      || (record.confidence !== undefined && typeof record.confidence !== "number")
+    ) {
+      return null;
+    }
+
+    return {
+      questionId: record.questionId,
+      type: record.type as "noul" | "score",
+      rawValue: record.rawValue,
+      ...(record.confidence === undefined ? {} : { confidence: record.confidence }),
+      storedNormalizedScore: record.normalizedScore,
+      storedImportance: record.importance,
+      storedWeight: record.weight,
+    } satisfies PersistedEvaluation;
+  });
+
+  const validPersisted = persisted.filter(
+    (item): item is PersistedEvaluation => item !== null,
+  );
+  if (validPersisted.length !== persisted.length) return null;
+
+  const scoring = scoreEvaluations(
+    plan,
+    validPersisted.map((item) => ({
+      questionId: item.questionId,
+      type: item.type,
+      rawValue: item.rawValue,
+      ...(item.confidence === undefined ? {} : { confidence: item.confidence }),
+    })),
+  );
+
+  const isSame = validPersisted.every((item, index) => {
+    const expected = scoring.evaluations[index];
+    return (
+      item.questionId === expected.questionId
+      && item.storedNormalizedScore === expected.normalizedScore
+      && item.storedImportance === expected.importance
+      && item.storedWeight === expected.weight
+    );
+  });
+
+  return isSame ? scoring.evaluations : null;
+}

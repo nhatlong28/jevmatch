@@ -229,3 +229,14 @@ change, and unfinished work stays documented here until its validation passes.
   Domain boundary tests cover endpoints, fractions, invalid result shapes,
   reordering, and confidence independence. Full tests (57), typecheck, lint,
   production build, and diff checks pass.
+- 2026-09-22: Implemented Phase 10 data-backed recruiter review. `/jobs` now
+  reads only the authenticated recruiter's Jobs and application counts;
+  published/closed Jobs list applications in deterministic Match Score order,
+  and protected application detail renders validated raw/normalized evidence,
+  importance, weight, contribution, confidence, and neutral score semantics.
+  Original CV access is a recruiter-only five-minute signed-URL redirect after
+  RLS ownership verification. Root now redirects into the authenticated flow,
+  and sample dashboard data is removed. Full tests (63), typecheck, lint,
+  production build, diff checks, anonymous browser redirect, and signed-URL
+  authorization tests pass. Authenticated browser review remains pending
+  provisioned recruiter credentials in this environment.

@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 
 import { validateEvaluationPlan } from "@/lib/domain/evaluation-plan";
+import { orderApplications } from "@/lib/domain/application-review";
 import { getCurrentRecruiter } from "@/lib/auth/recruiter";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,13 @@ export default async function JobPage({
 
   const validation = validateEvaluationPlan(job.evaluation_plan);
   const initialPlan = validation.success ? validation.data : null;
+  const { data: applications } = job.status === "draft"
+    ? { data: [] }
+    : await supabase
+      .from("applications")
+      .select("id, candidate_name, candidate_email, match_score, status, created_at")
+      .eq("job_id", job.id);
+  const orderedApplications = orderApplications(applications ?? []);
 
   return (
     <main className="min-h-screen bg-background p-5 sm:p-8">
@@ -44,6 +52,7 @@ export default async function JobPage({
           <EvaluationPlanGenerator initialPlan={initialPlan} jobId={job.id} />
         ) : job.public_slug ? (
           <PublishedJob
+            applications={orderedApplications}
             jobId={job.id}
             publicSlug={job.public_slug}
             status={job.status}
