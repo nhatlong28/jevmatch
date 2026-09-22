@@ -72,7 +72,7 @@ export function JobForm() {
     }
   }
 
-  async function save(action: "save-draft" | "publish") {
+  async function save() {
     if (!plan) return;
     const validation = validateEvaluationPlan(plan);
     if (!validation.success) {
@@ -85,7 +85,6 @@ export function JobForm() {
 
     setError(null);
     setIsWorking(true);
-    formData.set("action", action);
     formData.set("evaluationPlan", JSON.stringify(plan));
     try {
       const { response, body } = await request(formData, "/api/jobs");
@@ -200,18 +199,10 @@ export function JobForm() {
           <div className="flex flex-wrap gap-3">
             <Button
               disabled={isWorking}
-              onClick={() => save("publish")}
+              onClick={save}
               type="button"
             >
-              {isWorking ? "Saving…" : "Publish job"}
-            </Button>
-            <Button
-              disabled={isWorking}
-              onClick={() => save("save-draft")}
-              type="button"
-              variant="outline"
-            >
-              Save draft
+              {isWorking ? "Saving…" : "Save draft"}
             </Button>
           </div>
         </section>

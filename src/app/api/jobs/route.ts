@@ -26,7 +26,6 @@ export async function POST(request: Request) {
   const title = String(formData.get("title") ?? "").trim();
   const pastedText = String(formData.get("jdText") ?? "");
   const uploadedFile = formData.get("jdFile");
-  const action = String(formData.get("action") ?? "save-draft");
   const planJson = String(formData.get("evaluationPlan") ?? "");
   const hasPastedText = Boolean(pastedText.trim());
   const hasFile = uploadedFile instanceof File && uploadedFile.size > 0;
@@ -39,9 +38,6 @@ export async function POST(request: Request) {
       { error: "Paste a job description or choose one file." },
       { status: 400 },
     );
-  }
-  if (action !== "save-draft" && action !== "publish") {
-    return NextResponse.json({ error: "Choose Save draft or Publish job." }, { status: 400 });
   }
   let plan: unknown;
   try { plan = JSON.parse(planJson); } catch {
@@ -88,9 +84,8 @@ export async function POST(request: Request) {
         evaluation_plan: planValidation.data,
         jd_file_path: path,
         jd_text: description.text,
-        public_slug: action === "publish" ? randomUUID().replaceAll("-", "").slice(0, 12) : null,
         recruiter_id: recruiter.id,
-        status: action === "publish" ? "published" : "draft",
+        status: "draft",
         title,
       })
       .select("id")

@@ -6,6 +6,7 @@ import { getCurrentRecruiter } from "@/lib/auth/recruiter";
 import { createClient } from "@/lib/supabase/server";
 
 import { EvaluationPlanGenerator } from "./evaluation-plan-generator";
+import { PublishedJob } from "./published-job";
 
 export default async function JobPage({
   params,
@@ -19,7 +20,7 @@ export default async function JobPage({
   const supabase = await createClient();
   const { data: job } = await supabase
     .from("jobs")
-    .select("id, evaluation_plan, status, title")
+    .select("id, evaluation_plan, public_slug, status, title")
     .eq("id", jobId)
     .single();
 
@@ -35,13 +36,21 @@ export default async function JobPage({
           <Link className="hover:text-foreground" href="/jobs">Jobs</Link>
           {" / "}{job.title ?? "Untitled job"}
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Prepare evaluation plan</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+          {job.status === "draft" ? "Prepare evaluation plan" : "Published job"}
+        </h1>
         <p className="mt-3 text-muted-foreground">This job is currently {job.status}.</p>
         {job.status === "draft" ? (
           <EvaluationPlanGenerator initialPlan={initialPlan} jobId={job.id} />
+        ) : job.public_slug ? (
+          <PublishedJob
+            jobId={job.id}
+            publicSlug={job.public_slug}
+            status={job.status}
+          />
         ) : (
           <p className="mt-8 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
-            Evaluation plans can only be generated while a job is a draft.
+            This job is missing its public link.
           </p>
         )}
       </div>

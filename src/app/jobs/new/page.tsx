@@ -16,8 +16,8 @@ export default async function NewJobPage() {
         <p className="text-sm text-muted-foreground">Jobs / New job</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">Create a job</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Add a role title and job description. You will review the evaluation plan before
-          publishing.
+          Add a role title and job description. You will review the evaluation plan
+          and publish from the saved draft.
         </p>
         <section className="mt-8 rounded-lg border bg-card p-5 shadow-sm sm:p-7">
           <JobForm />

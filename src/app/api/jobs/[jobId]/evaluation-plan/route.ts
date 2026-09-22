@@ -65,12 +65,33 @@ export async function PATCH(
     return NextResponse.json({ error: "Sign in to update an evaluation plan." }, { status: 401 });
   }
   const { jobId } = await context.params;
-  let body: { action?: string; plan?: unknown };
+  let body: { action?: string; confirmed?: boolean; plan?: unknown };
   try {
     body = await request.json() as { action?: string; plan?: unknown };
   } catch {
     return NextResponse.json({ error: "Submit a valid evaluation plan." }, { status: 400 });
   }
+  if (
+    body.action !== "save-draft" &&
+    body.action !== "publish" &&
+    body.action !== "close"
+  ) {
+    return NextResponse.json({ error: "Choose Save draft, Publish job, or Close job." }, { status: 400 });
+  }
+  const supabase = await createClient();
+  if (body.action === "close") {
+    const { data, error } = await supabase
+      .from("jobs")
+      .update({ status: "closed" })
+      .eq("id", jobId)
+      .eq("recruiter_id", recruiter.id)
+      .eq("status", "published")
+      .select("id")
+      .single();
+    if (error || !data) return NextResponse.json({ error: "This published job could not be closed." }, { status: 409 });
+    return NextResponse.json({ id: data.id });
+  }
+
   const validation = validateEvaluationPlan(body.plan);
   if (!validation.success) {
     return NextResponse.json(
@@ -78,12 +99,28 @@ export async function PATCH(
       { status: 400 },
     );
   }
-  if (body.action !== "save-draft" && body.action !== "publish") {
-    return NextResponse.json({ error: "Choose Save draft or Publish job." }, { status: 400 });
+  if (body.action === "publish" && body.confirmed !== true) {
+    return NextResponse.json(
+      { error: "Confirm that publishing locks this evaluation plan." },
+      { status: 400 },
+    );
   }
-  const supabase = await createClient();
+
+  const { data: job } = await supabase
+    .from("jobs")
+    .select("public_slug")
+    .eq("id", jobId)
+    .eq("recruiter_id", recruiter.id)
+    .eq("status", "draft")
+    .single();
+  if (!job) return NextResponse.json({ error: "This draft could not be updated." }, { status: 409 });
+
   const update = body.action === "publish"
-    ? { evaluation_plan: validation.data, public_slug: crypto.randomUUID().replaceAll("-", "").slice(0, 12), status: "published" as const }
+    ? {
+        evaluation_plan: validation.data,
+        public_slug: job.public_slug ?? crypto.randomUUID().replaceAll("-", "").slice(0, 12),
+        status: "published" as const,
+      }
     : { evaluation_plan: validation.data };
   const { data, error } = await supabase
     .from("jobs")

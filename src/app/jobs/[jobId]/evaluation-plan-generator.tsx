@@ -39,12 +39,14 @@ export function EvaluationPlanGenerator({
     initialPlan,
   );
   const [isWorking, setIsWorking] = useState(false);
+  const [isPublishConfirmed, setIsPublishConfirmed] = useState(false);
   const [saved, setSaved] = useState(false);
 
   function editPlan(action: EvaluationPlanEditorAction) {
     setError(null);
     setIssues([]);
     setSaved(false);
+    setIsPublishConfirmed(false);
     dispatch(action);
   }
 
@@ -87,7 +89,7 @@ export function EvaluationPlanGenerator({
     setIsWorking(true);
     try {
       const response = await fetch(`/api/jobs/${jobId}/evaluation-plan`, {
-        body: JSON.stringify({ action, plan }),
+        body: JSON.stringify({ action, confirmed: isPublishConfirmed, plan }),
         headers: { "content-type": "application/json" },
         method: "PATCH",
       });
@@ -129,9 +131,21 @@ export function EvaluationPlanGenerator({
             issues={issues}
             plan={plan}
           />
+          <label className="flex gap-3 rounded-md border bg-surface p-4 text-sm">
+            <input
+              checked={isPublishConfirmed}
+              className="mt-0.5 size-4"
+              onChange={(event) => setIsPublishConfirmed(event.target.checked)}
+              type="checkbox"
+            />
+            <span>
+              I have reviewed this plan. Publishing locks every question and
+              criterion for all candidate evaluations and cannot be undone.
+            </span>
+          </label>
           <div className="flex flex-wrap gap-3 border-t pt-4">
             <Button
-              disabled={isWorking}
+              disabled={isWorking || !isPublishConfirmed}
               onClick={() => save("publish")}
               type="button"
             >

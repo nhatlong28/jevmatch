@@ -58,7 +58,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 3. [complete] Phase 03 — draft Job and JD processing.
 4. [complete] Phase 04 — OpenAI Evaluation Plan draft generation.
 5. [complete] Phase 05 — Evaluation Editor.
-6. [pending] Phase 06 — publish, immutable plan, public slug, and close.
+6. [complete] Phase 06 — publish, immutable plan, public slug, and close.
 7. [pending] Phase 07 — public candidate application and CV processing.
 8. [pending] Phase 08 — TypeSafe/Jev evaluation.
 9. [pending] Phase 09 — deterministic normalization and scoring.
@@ -191,3 +191,13 @@ change, and unfinished work stays documented here until its validation passes.
   Linked pgTAP was intentionally not run per product-owner direction; the new
   positive/negative authorization cases remain checked in for the next allowed
   database test run.
+- 2026-09-22: Completed Phase 06. Publish now occurs only from a saved draft
+  after an explicit immutable-plan acknowledgement; Cloud migration
+  `20260922080000` aligns database validation with TypeScript, locks published
+  slugs and plans, and provides a narrow public resolver that returns only a
+  published Job's public context. Browser proof covered publish, locked view,
+  published public link, close, and closed-link 404. A direct Cloud write after
+  close was rejected, and simultaneous conditional publish requests produced
+  exactly one transition. Unit tests (34), typecheck, lint, production build,
+  generated Cloud types, and diff checks pass. The committed pgTAP lifecycle
+  proof could not run in this environment because Docker Desktop is unavailable.
