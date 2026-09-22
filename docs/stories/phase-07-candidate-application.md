@@ -17,12 +17,14 @@ published Job without gaining access to internal evaluation data.
 
 Phases 01, 03, and 06.
 
-## Decision gates
+## Accepted decisions
 
-Accept maximum CV size, MIME/content-sniffing policy, duplicate application
-behavior, submission rate-limit quota/key, and candidate-facing behavior when
-extraction fails. Rate limiting cannot be implemented from a configurable default
-without accepted policy.
+- CVs are PDF-only, limited to 10 MB, and require MIME plus signature checks.
+- A candidate email can submit only once for a Job.
+- Public submissions are limited to three valid submissions per source IP per
+  rolling hour.
+- Extraction failure creates neither an application nor a stored CV; the
+  candidate can retry with another file.
 
 ## Scope
 

@@ -17,9 +17,10 @@ fields: full name, email, and CV. The candidate does not authenticate and sees a
 neutral success confirmation after a successful submission.
 
 The public endpoint validates slug, published status, required fields, file type,
-and file size. The maximum upload size, MIME/content-sniffing policy, duplicate
-submission behavior, and rate-limit quota require explicit decisions before this
-boundary is implemented.
+and file size. CVs are PDF-only, no larger than 10 MB, and require both the
+`application/pdf` MIME type and PDF signature. A candidate email may submit once
+per Job. The endpoint accepts at most three valid submissions per source IP in a
+rolling hour; rate-limit records store only a hash of the source IP.
 
 ## Resume processing
 

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { CandidateApplicationForm } from "./candidate-application-form";
 
 export default async function PublicJobPage({
   params,
@@ -23,10 +24,9 @@ export default async function PublicJobPage({
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">
           {job.title ?? "Open role"}
         </h1>
-        <p className="mt-4 text-muted-foreground">
-          This role is accepting applications. The application form will be
-          available here shortly.
-        </p>
+        <p className="mt-4 text-muted-foreground">This role is accepting applications.</p>
+        <div className="my-8 border-t" />
+        <CandidateApplicationForm slug={job.public_slug} />
       </section>
     </main>
   );

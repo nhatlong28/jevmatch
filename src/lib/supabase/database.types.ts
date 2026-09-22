@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_submission_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          ip_hash: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_hash: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_hash?: string
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           candidate_email: string
@@ -115,6 +133,20 @@ export type Database = {
           id: string
           public_slug: string
           title: string
+        }[]
+      }
+      record_public_application_submission: {
+        Args: {
+          submitted_candidate_email: string
+          submitted_candidate_name: string
+          submitted_resume_file_path: string
+          submitted_resume_text: string
+          submitted_slug: string
+          submitting_ip: string
+        }
+        Returns: {
+          application_id: string
+          result: string
         }[]
       }
     }

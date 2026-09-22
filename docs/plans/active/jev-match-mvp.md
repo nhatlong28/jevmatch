@@ -59,7 +59,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 4. [complete] Phase 04 — OpenAI Evaluation Plan draft generation.
 5. [complete] Phase 05 — Evaluation Editor.
 6. [complete] Phase 06 — publish, immutable plan, public slug, and close.
-7. [pending] Phase 07 — public candidate application and CV processing.
+7. [complete] Phase 07 — public candidate application and CV processing.
 8. [pending] Phase 08 — TypeSafe/Jev evaluation.
 9. [pending] Phase 09 — deterministic normalization and scoring.
 10. [pending] Phase 10 — data-backed recruiter dashboard and candidate review.
@@ -201,3 +201,16 @@ change, and unfinished work stays documented here until its validation passes.
   exactly one transition. Unit tests (34), typecheck, lint, production build,
   generated Cloud types, and diff checks pass. The committed pgTAP lifecycle
   proof could not run in this environment because Docker Desktop is unavailable.
+- 2026-09-22: Completed Phase 07. Public published-Job routes now provide a
+  PDF-only (10 MB) candidate form that stores CVs privately, extracts text
+  server-side, and creates a `processing` application through a service-only
+  database boundary. One email may apply once per Job; valid submissions are
+  capped at three per source IP per rolling hour using hashed rate records.
+  Production-server verification with a real PDF proved three accepted
+  applications, rate limiting, duplicate-email rejection, extraction-failure
+  rollback, and private storage; all temporary users, Jobs, applications, rate
+  records, and CV files were removed afterward. Unit tests (39), typecheck,
+  lint, build, generated Cloud types, desktop/mobile public-form rendering, and
+  diff checks pass. The committed pgTAP boundary proof could not run because
+  Docker Desktop is unavailable. Production deployment must have its trusted
+  proxy overwrite client-IP forwarding headers for the IP limit to be reliable.
