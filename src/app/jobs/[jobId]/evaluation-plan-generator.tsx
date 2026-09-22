@@ -41,6 +41,14 @@ export function EvaluationPlanGenerator({
   const [isWorking, setIsWorking] = useState(false);
   const [isPublishConfirmed, setIsPublishConfirmed] = useState(false);
   const [saved, setSaved] = useState(false);
+  const questionCounts = plan?.questions.reduce(
+    (counts, question) => ({
+      ...counts,
+      [question.importance]: counts[question.importance] + 1,
+      total: counts.total + 1,
+    }),
+    { core: 0, preferred: 0, required: 0, total: 0 },
+  ) ?? { core: 0, preferred: 0, required: 0, total: 0 };
 
   function editPlan(action: EvaluationPlanEditorAction) {
     setError(null);
@@ -112,14 +120,15 @@ export function EvaluationPlanGenerator({
   }
 
   return (
-    <section className="mt-8 space-y-5 rounded-lg border bg-card p-5 shadow-sm sm:p-7">
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+    <section className="space-y-5 rounded-[14px] border bg-surface p-5 sm:p-7">
       {error ? (
-        <p aria-live="polite" className="text-sm text-destructive" role="alert">
+        <p aria-live="polite" className="rounded-xl border border-destructive/25 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {error}
         </p>
       ) : null}
       {saved ? (
-        <p aria-live="polite" className="text-sm text-success" role="status">
+        <p aria-live="polite" className="rounded-xl border border-success/25 bg-success-soft p-3 text-sm text-success" role="status">
           Draft saved. You can leave this page and return to continue editing.
         </p>
       ) : null}
@@ -131,7 +140,7 @@ export function EvaluationPlanGenerator({
             issues={issues}
             plan={plan}
           />
-          <label className="flex gap-3 rounded-md border bg-surface p-4 text-sm">
+          <label className="flex gap-3 rounded-xl border bg-muted/35 p-4 text-sm">
             <input
               checked={isPublishConfirmed}
               className="mt-0.5 size-4"
@@ -143,7 +152,7 @@ export function EvaluationPlanGenerator({
               criterion for all candidate evaluations and cannot be undone.
             </span>
           </label>
-          <div className="flex flex-wrap gap-3 border-t pt-4">
+          <div className="flex flex-wrap justify-end gap-3 border-t pt-5">
             <Button
               disabled={isWorking || !isPublishConfirmed}
               onClick={() => save("publish")}
@@ -170,9 +179,9 @@ export function EvaluationPlanGenerator({
           </div>
         </>
       ) : (
-        <div>
-          <p className="text-sm font-medium">Evaluation plan</p>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+        <div className="py-5">
+          <p className="text-lg font-semibold">Generate the first draft</p>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
             Generate a draft from this job description. You will review and edit
             every question before publishing.
           </p>
@@ -187,5 +196,34 @@ export function EvaluationPlanGenerator({
         </div>
       )}
     </section>
+    <aside className="space-y-5 xl:sticky xl:top-5 xl:self-start">
+      <section className="rounded-[14px] border bg-surface p-5">
+        <h2 className="text-lg font-semibold">Plan summary</h2>
+        <dl className="mt-5 grid gap-4 text-sm">
+          {[
+            ["Total questions", questionCounts.total],
+            ["Required", questionCounts.required],
+            ["Core", questionCounts.core],
+            ["Preferred", questionCounts.preferred],
+          ].map(([label, value]) => (
+            <div className="flex items-center justify-between gap-4" key={label}>
+              <dt className="text-muted-foreground">{label}</dt>
+              <dd className="font-semibold tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+      <section className="rounded-[14px] border border-primary/25 bg-primary-soft/55 p-4 text-sm leading-5 text-secondary-foreground">
+        Importance affects deterministic scoring. It is not sent to Jev.
+      </section>
+      <section className="rounded-[14px] border bg-surface p-5 text-sm">
+        <h2 className="font-semibold">Publish validation</h2>
+        <p className="mt-2 leading-5 text-muted-foreground">
+          Publishing requires at least one valid question and locks the plan for
+          every candidate evaluation.
+        </p>
+      </section>
+    </aside>
+    </div>
   );
 }

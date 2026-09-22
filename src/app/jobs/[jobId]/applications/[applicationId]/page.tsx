@@ -47,10 +47,10 @@ export default async function ApplicationDetailPage({
     ? readApplicationEvaluations(planValidation.data, application.evaluations)
     : null;
   const totalWeight = evaluations?.reduce((sum, evaluation) => sum + evaluation.weight, 0) ?? 0;
+  const roundedScore = application.match_score === null ? null : Math.round(application.match_score);
 
   return (
-    <main className="min-h-screen bg-background p-5 sm:p-8">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <Link className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground" href={`/jobs/${jobId}`}>
           <ArrowLeftIcon aria-hidden="true" className="size-4" />
           Back to applications
@@ -76,22 +76,27 @@ export default async function ApplicationDetailPage({
           </Button>
         </header>
 
-        <section className="mt-8 rounded-xl border bg-card p-5 shadow-sm sm:p-7" aria-labelledby="score-title">
+        <section className="mt-8 rounded-[14px] border bg-surface p-5 sm:p-7" aria-labelledby="score-title">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Neutral evidence summary</p>
               <h2 className="mt-1 text-2xl font-semibold" id="score-title">Match Score</h2>
             </div>
-            <p className="text-4xl font-semibold tracking-tight">
-              {application.match_score === null ? "—" : `${Math.round(application.match_score)} / 100`}
-            </p>
+            <div className="min-w-44 text-right">
+              <p className="text-4xl font-semibold tracking-[-0.05em] tabular-nums">
+                {roundedScore === null ? "—" : `${roundedScore} / 100`}
+              </p>
+              <div aria-hidden="true" className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-primary" style={{ width: `${roundedScore ?? 0}%` }} />
+              </div>
+            </div>
           </div>
           <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
             This score summarizes evidence against the published evaluation plan. Review the criterion details and original CV together.
           </p>
         </section>
 
-        <section className="mt-6 rounded-xl border bg-card p-5 shadow-sm sm:p-7" aria-labelledby="criteria-title">
+        <section className="mt-6 rounded-[14px] border bg-surface p-5 sm:p-7" aria-labelledby="criteria-title">
           <div className="flex items-center justify-between gap-4 border-b pb-4">
             <div>
               <h2 className="text-lg font-semibold" id="criteria-title">Criterion evidence</h2>
@@ -140,6 +145,5 @@ export default async function ApplicationDetailPage({
           )}
         </section>
       </div>
-    </main>
   );
 }

@@ -37,7 +37,7 @@ export function SignInForm() {
         <label className="text-sm font-medium" htmlFor="email">
           Work email
         </label>
-        <Input autoComplete="email" id="email" name="email" required type="email" />
+        <Input autoComplete="email" className="h-11 rounded-xl" id="email" name="email" required type="email" />
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium" htmlFor="password">
@@ -45,6 +45,7 @@ export function SignInForm() {
         </label>
         <Input
           autoComplete="current-password"
+          className="h-11 rounded-xl"
           id="password"
           name="password"
           required

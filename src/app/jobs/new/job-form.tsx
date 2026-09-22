@@ -1,6 +1,7 @@
 "use client";
 
 import { useReducer, useRef, useState } from "react";
+import { ClipboardPasteIcon, FileUpIcon, LoaderCircleIcon, SparklesIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -107,15 +108,16 @@ export function JobForm() {
 
   return (
     <form
-      className="space-y-6"
+      className="space-y-7"
       onSubmit={(event) => event.preventDefault()}
       ref={formRef}
     >
-      <div className="space-y-2">
+      <div className="max-w-xl space-y-2">
         <label className="text-sm font-medium" htmlFor="title">
           Job title
         </label>
         <Input
+          className="h-11 rounded-xl"
           id="title"
           name="title"
           placeholder="Senior Frontend Engineer"
@@ -124,56 +126,64 @@ export function JobForm() {
       </div>
 
       <fieldset className="space-y-3">
-        <legend className="text-sm font-medium">Job description</legend>
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <legend className="text-sm font-medium">Job Description</legend>
+          <p className="text-xs text-muted-foreground">Paste text or upload a supported file.</p>
+        </div>
         <div
           aria-label="Job description source"
-          className="flex gap-2"
+          className="grid grid-cols-2 gap-2 rounded-xl border bg-muted/35 p-1"
           role="tablist"
         >
           <Button
-            aria-selected={mode === "upload"}
-            onClick={() => setMode("upload")}
-            role="tab"
-            type="button"
-            variant={mode === "upload" ? "default" : "outline"}
-          >
-            Upload file
-          </Button>
-          <Button
             aria-selected={mode === "paste"}
+            className="w-full justify-center"
             onClick={() => setMode("paste")}
             role="tab"
             type="button"
-            variant={mode === "paste" ? "default" : "outline"}
+            variant={mode === "paste" ? "default" : "ghost"}
           >
+            <ClipboardPasteIcon data-icon="inline-start" />
             Paste text
+          </Button>
+          <Button
+            aria-selected={mode === "upload"}
+            className="w-full justify-center"
+            onClick={() => setMode("upload")}
+            role="tab"
+            type="button"
+            variant={mode === "upload" ? "default" : "ghost"}
+          >
+            <FileUpIcon data-icon="inline-start" />
+            Upload file
           </Button>
         </div>
 
         {mode === "paste" ? (
           <textarea
-            className="min-h-64 w-full rounded-md border bg-surface px-3 py-2 text-sm"
+            className="min-h-72 w-full resize-y rounded-xl border bg-background px-4 py-3 text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             id="jdText"
             name="jdText"
             placeholder="Paste the full job description here."
             required
           />
         ) : (
-          <div className="rounded-md border border-dashed bg-surface p-5">
-            <label className="block text-sm font-medium" htmlFor="jdFile">
-              Job description file
+          <div className="rounded-xl border border-dashed bg-muted/20 p-5 sm:p-6">
+            <label className="flex cursor-pointer flex-col items-center justify-center text-center" htmlFor="jdFile">
+              <span className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary">
+                <FileUpIcon aria-hidden="true" className="size-4" />
+              </span>
+              <span className="mt-3 text-sm font-medium">Choose a Job Description file</span>
+              <span className="mt-1 text-sm text-muted-foreground">PDF, DOCX, or UTF-8 TXT up to 10 MB.</span>
             </label>
             <Input
               accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-              className="mt-3"
+              className="mt-5 h-10 rounded-xl"
               id="jdFile"
               name="jdFile"
               required
               type="file"
             />
-            <p className="mt-2 text-sm text-muted-foreground">
-              PDF, DOCX, or UTF-8 TXT, up to 10 MB.
-            </p>
           </div>
         )}
       </fieldset>
@@ -186,17 +196,18 @@ export function JobForm() {
 
       {!plan ? (
         <Button disabled={isWorking} onClick={generate} type="button">
+          {isWorking ? <LoaderCircleIcon className="animate-spin" data-icon="inline-start" /> : <SparklesIcon data-icon="inline-start" />}
           {isWorking ? "Generating plan…" : "Generate evaluation plan"}
         </Button>
       ) : (
-        <section className="space-y-4 rounded-lg border bg-surface p-4">
+        <section className="space-y-5 rounded-[14px] border bg-muted/25 p-4 sm:p-5">
           <EvaluationPlanEditor
             dispatch={editPlan}
             issues={issues}
             plan={plan}
           />
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-end gap-3 border-t pt-4">
             <Button
               disabled={isWorking}
               onClick={save}

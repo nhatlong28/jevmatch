@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVerticalIcon } from "lucide-react";
+import { GripVerticalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -39,38 +39,43 @@ export function EvaluationPlanEditor({
 }: EvaluationPlanEditorProps) {
   return (
     <div className="space-y-4">
-      <div>
-        <p className="font-medium">Evaluation plan</p>
-        <p className="text-sm text-muted-foreground">
-          Review every question before saving. Importance affects deterministic
-          scoring and is not sent to Jev.
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Fixed weights: Required ×3, Core ×2, Preferred ×1.
-        </p>
+      <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold tracking-[-0.025em]">Evaluation questions</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-5 text-muted-foreground">
+            Review every question before saving. Importance affects deterministic
+            scoring and is not sent to Jev.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Fixed weights: Required ×3, Core ×2, Preferred ×1.
+          </p>
+        </div>
+        <Button
+          className="self-start"
+          onClick={() =>
+            dispatch({ type: "add-question", question: newQuestion() })
+          }
+          type="button"
+          variant="outline"
+        >
+          <PlusIcon data-icon="inline-start" />
+          Add question
+        </Button>
       </div>
 
       <FieldError message={issueFor(issues, "questions")} />
 
-      {plan.questions.map((question, questionIndex) => (
-        <QuestionEditor
-          dispatch={dispatch}
-          issues={issues}
-          key={questionIndex}
-          question={question}
-          questionIndex={questionIndex}
-        />
-      ))}
-
-      <Button
-        onClick={() =>
-          dispatch({ type: "add-question", question: newQuestion() })
-        }
-        type="button"
-        variant="outline"
-      >
-        Add question
-      </Button>
+      <div className="overflow-hidden rounded-[12px] border bg-surface">
+        {plan.questions.map((question, questionIndex) => (
+          <QuestionEditor
+            dispatch={dispatch}
+            issues={issues}
+            key={`${question.id}-${questionIndex}`}
+            question={question}
+            questionIndex={questionIndex}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -109,7 +114,7 @@ function QuestionEditor({
     question.jev.type === "score" ? question.jev.criteria : null;
 
   return (
-    <div className="space-y-3 rounded-md border bg-card p-4">
+    <article className="space-y-4 border-b p-4 last:border-b-0 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold">Question {questionIndex + 1}</p>
         <Button
@@ -118,6 +123,7 @@ function QuestionEditor({
           type="button"
           variant="destructive"
         >
+          <Trash2Icon data-icon="inline-start" />
           Delete
         </Button>
       </div>
@@ -126,7 +132,7 @@ function QuestionEditor({
         Question ID
         <Input
           aria-invalid={Boolean(idError)}
-          className="mt-1"
+          className="mt-2 h-10 rounded-xl"
           onChange={(event) =>
             dispatch({
               type: "set-question-id",
@@ -143,7 +149,7 @@ function QuestionEditor({
         Instructions
         <textarea
           aria-invalid={Boolean(instructionsError)}
-          className="mt-1 min-h-20 w-full rounded-md border bg-surface px-3 py-2 text-sm"
+          className="mt-2 min-h-24 w-full resize-y rounded-xl border bg-background px-3 py-2 text-sm leading-6 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           onChange={(event) =>
             dispatch({
               type: "set-question-instructions",
@@ -156,11 +162,11 @@ function QuestionEditor({
         <FieldError message={instructionsError} />
       </label>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="text-sm">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="text-sm font-medium">
           Importance
           <select
-            className="mt-1 w-full rounded-md border bg-surface p-2"
+            className="mt-2 h-10 w-full rounded-xl border bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             onChange={(event) =>
               dispatch({
                 type: "set-question-importance",
@@ -178,10 +184,10 @@ function QuestionEditor({
           </select>
         </label>
 
-        <label className="text-sm">
+        <label className="text-sm font-medium">
           Type
           <select
-            className="mt-1 w-full rounded-md border bg-surface p-2"
+            className="mt-2 h-10 w-full rounded-xl border bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             onChange={(event) =>
               dispatch({
                 type: "set-question-type",
@@ -209,8 +215,8 @@ function QuestionEditor({
               <div
                 className={
                   dropCriterionIndex === criterionIndex
-                    ? "rounded-md bg-primary/10 p-2"
-                    : "rounded-md p-2"
+                    ? "rounded-xl bg-primary-soft p-2"
+                    : "rounded-xl p-2"
                 }
                 key={criterionIndex}
                 onDragOver={(event) => {
@@ -239,7 +245,7 @@ function QuestionEditor({
                 <div className="flex items-center gap-2">
                   <button
                     aria-label={`Drag criterion ${criterionIndex + 1}`}
-                    className="cursor-grab rounded-md p-2 text-muted-foreground hover:bg-muted active:cursor-grabbing"
+                    className="cursor-grab rounded-lg p-2 text-muted-foreground hover:bg-muted active:cursor-grabbing"
                     draggable
                     onDragEnd={() => {
                       setDraggedCriterionIndex(null);
@@ -284,7 +290,8 @@ function QuestionEditor({
                     type="button"
                     variant="destructive"
                   >
-                    Delete
+                    <Trash2Icon aria-hidden="true" />
+                    <span className="sr-only">Delete</span>
                   </Button>
                 </div>
                 <FieldError message={criterionError} />
@@ -302,10 +309,11 @@ function QuestionEditor({
             type="button"
             variant="outline"
           >
+            <PlusIcon data-icon="inline-start" />
             Add criterion
           </Button>
         </div>
       ) : null}
-    </div>
+    </article>
   );
 }
