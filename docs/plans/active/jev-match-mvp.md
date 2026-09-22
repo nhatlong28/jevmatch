@@ -61,7 +61,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 6. [complete] Phase 06 — publish, immutable plan, public slug, and close.
 7. [complete] Phase 07 — public candidate application and CV processing.
 8. [complete] Phase 08 — TypeSafe/Jev evaluation.
-9. [pending] Phase 09 — deterministic normalization and scoring.
+9. [complete] Phase 09 — deterministic normalization and scoring.
 10. [pending] Phase 10 — data-backed recruiter dashboard and candidate review.
 
 Cross-phase visual work is complete as a prototype and preserved for reuse. It
@@ -223,3 +223,9 @@ change, and unfinished work stays documented here until its validation passes.
   persistence, and a controlled fixture through the installed SDK. Full tests
   (47), typecheck, lint, production build, diff checks, and client-bundle secret
   scan pass. Live TypeSafe provider execution remains unattempted in this phase.
+- 2026-09-22: Completed Phase 09. Added deterministic Noul/Score normalization,
+  fixed required/core/preferred weighting, order-independent aggregation, strict
+  result validation, and persistence of enriched evaluations plus Match Score.
+  Domain boundary tests cover endpoints, fractions, invalid result shapes,
+  reordering, and confidence independence. Full tests (57), typecheck, lint,
+  production build, and diff checks pass.

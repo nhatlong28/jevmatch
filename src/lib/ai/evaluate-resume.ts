@@ -12,6 +12,8 @@ import {
   type EvaluationPlan,
   validateEvaluationPlan,
 } from "../domain/evaluation-plan";
+import type { EvaluationResult } from "../domain/models";
+import { scoreEvaluations } from "../domain/scoring";
 import { createAdminClient } from "../supabase/admin";
 import type { Database } from "../supabase/database.types";
 
@@ -212,7 +214,7 @@ export async function evaluateResume(
 }
 
 type EvaluationOutcome =
-  | { status: "evaluated"; evaluations: RawJevEvaluation[] }
+  | { status: "evaluated"; evaluations: EvaluationResult[]; matchScore: number }
   | { status: "failed" };
 
 type AdminClient = ReturnType<typeof createAdminClient>;
@@ -233,7 +235,7 @@ export async function evaluateApplication(
   const supabase = dependencies.adminClient ?? createAdminClient();
   const { data: application, error: applicationError } = await supabase
     .from("applications")
-    .select("id, job_id, resume_text, status, evaluations")
+    .select("id, job_id, resume_text, status, evaluations, match_score")
     .eq("id", applicationId)
     .maybeSingle();
 
@@ -243,7 +245,11 @@ export async function evaluateApplication(
   if (application.status === "evaluated") {
     const existing = application.evaluations;
     if (Array.isArray(existing)) {
-      return { status: "evaluated", evaluations: existing as RawJevEvaluation[] };
+      return {
+        status: "evaluated",
+        evaluations: existing as EvaluationResult[],
+        matchScore: Number(application.match_score ?? 0),
+      };
     }
     throw new JevEvaluationError("Evaluated application has no results.");
   }
@@ -264,9 +270,10 @@ export async function evaluateApplication(
     if (!planValidation.success) throw new JevEvaluationError("The published evaluation plan is invalid.");
 
     const evaluations = await evaluateResume(application.resume_text, planValidation.data, dependencies);
+    const scoring = scoreEvaluations(planValidation.data, evaluations);
     const update: Database["public"]["Tables"]["applications"]["Update"] = {
-      evaluations: evaluations as unknown as Database["public"]["Tables"]["applications"]["Update"]["evaluations"],
-      match_score: null,
+      evaluations: scoring.evaluations as unknown as Database["public"]["Tables"]["applications"]["Update"]["evaluations"],
+      match_score: scoring.matchScore,
       status: "evaluated",
     };
     const { error: updateError } = await supabase
@@ -275,7 +282,7 @@ export async function evaluateApplication(
       .eq("id", applicationId);
 
     if (updateError) throw updateError;
-    return { status: "evaluated", evaluations };
+    return { status: "evaluated", evaluations: scoring.evaluations, matchScore: scoring.matchScore };
   } catch (error) {
     await markApplicationFailed(supabase, applicationId);
     if (error instanceof JevEvaluationError) return { status: "failed" };

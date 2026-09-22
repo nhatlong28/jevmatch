@@ -254,7 +254,49 @@ describe("Jev resume evaluation", () => {
       client: retryClient,
       configuration: { apiKey: "test-key", model: "jev-test" },
       adminClient: fakeAdminClient as never,
-    })).resolves.toMatchObject({ status: "evaluated" });
-    expect(updates).toContainEqual({ evaluations: expect.any(Array), match_score: null, status: "evaluated" });
+    })).resolves.toEqual({
+      status: "evaluated",
+      matchScore: 100,
+      evaluations: [
+        {
+          questionId: "minimum_experience",
+          type: "noul",
+          importance: "required",
+          rawValue: 1,
+          normalizedScore: 1,
+          weight: 3,
+        },
+        {
+          questionId: "typescript_depth",
+          type: "score",
+          importance: "preferred",
+          rawValue: 2,
+          normalizedScore: 1,
+          weight: 1,
+        },
+      ],
+    });
+    expect(updates).toContainEqual({
+      evaluations: [
+        {
+          questionId: "minimum_experience",
+          type: "noul",
+          importance: "required",
+          rawValue: 1,
+          normalizedScore: 1,
+          weight: 3,
+        },
+        {
+          questionId: "typescript_depth",
+          type: "score",
+          importance: "preferred",
+          rawValue: 2,
+          normalizedScore: 1,
+          weight: 1,
+        },
+      ],
+      match_score: 100,
+      status: "evaluated",
+    });
   });
 });
