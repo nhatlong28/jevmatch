@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { evaluateApplication } from "@/lib/ai/evaluate-resume";
 import { processResume, ResumeError } from "@/lib/resumes";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "We could not submit your application. Try again." }, { status: 500 });
     }
 
+    await evaluateApplication(result.application_id);
     return NextResponse.json({ id: result.application_id }, { status: 201 });
   } catch (error) {
     if (error instanceof ResumeError) {

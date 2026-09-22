@@ -60,7 +60,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 5. [complete] Phase 05 — Evaluation Editor.
 6. [complete] Phase 06 — publish, immutable plan, public slug, and close.
 7. [complete] Phase 07 — public candidate application and CV processing.
-8. [pending] Phase 08 — TypeSafe/Jev evaluation.
+8. [complete] Phase 08 — TypeSafe/Jev evaluation.
 9. [pending] Phase 09 — deterministic normalization and scoring.
 10. [pending] Phase 10 — data-backed recruiter dashboard and candidate review.
 
@@ -214,3 +214,12 @@ change, and unfinished work stays documented here until its validation passes.
   diff checks pass. The committed pgTAP boundary proof could not run because
   Docker Desktop is unavailable. Production deployment must have its trusted
   proxy overwrite client-IP forwarding headers for the IP limit to be reliable.
+- 2026-09-22: Completed Phase 08. Added the server-only TypeSafe SDK adapter with
+  `jev-latest` defaulting, plan-to-primitive conversion, exact `{ resume }`
+  state, strict raw-answer validation, and idempotent application evaluation.
+  Candidate submissions now evaluate the stored application and persist raw Jev
+  results or a neutral `failed` state without setting `match_score`. Contract
+  tests cover mapping/state secrecy, bounds and missing/extra answers, failure
+  persistence, and a controlled fixture through the installed SDK. Full tests
+  (47), typecheck, lint, production build, diff checks, and client-bundle secret
+  scan pass. Live TypeSafe provider execution remains unattempted in this phase.
