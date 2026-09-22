@@ -1,0 +1,5 @@
+Senior Frontend Engineer
+
+Build accessible, reliable React and TypeScript applications. Candidates should
+demonstrate experience shipping user-facing web products and collaborating with
+design and backend engineering partners.

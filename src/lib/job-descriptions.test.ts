@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 import {
   JobDescriptionError,
@@ -11,6 +13,18 @@ function file(name: string, type: string, bytes: number[]) {
 }
 
 describe("processJobDescription", () => {
+  it("accepts the uploaded TXT job-description fixture", async () => {
+    const bytes = await readFile(
+      join(process.cwd(), "src/lib/fixtures/job-descriptions/frontend-engineer.txt"),
+    );
+    const result = await processJobDescription({
+      kind: "file",
+      file: new File([bytes], "frontend-engineer.txt", { type: "text/plain" }),
+    });
+
+    expect(result.text).toContain("Senior Frontend Engineer");
+  });
+
   it("accepts UTF-8 text, including a BOM", async () => {
     const result = await processJobDescription({
       kind: "file",
