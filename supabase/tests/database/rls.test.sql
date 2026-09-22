@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(12);
 
 insert into auth.users (id, email)
 values
@@ -68,6 +68,34 @@ select results_eq(
   'recruiter A reads only applications through their own jobs'
 );
 
+select results_eq(
+  $$
+    update public.jobs
+    set evaluation_plan = '{"questions":[{"id":"experience","importance":"core","jev":{"type":"noul","instructions":"Is relevant experience shown?"}}]}'::jsonb
+    where id = '20000000-0000-0000-0000-000000000001'
+    returning id
+  $$,
+  array['20000000-0000-0000-0000-000000000001'::uuid],
+  'recruiter A can update their own draft Evaluation Plan'
+);
+
+select is_empty(
+  $$
+    update public.jobs
+    set evaluation_plan = '{"questions":[{"id":"tampered","importance":"core","jev":{"type":"noul","instructions":"Should not be saved"}}]}'::jsonb
+    where id = '20000000-0000-0000-0000-000000000002'
+    returning id
+  $$,
+  'recruiter A cannot update recruiter B draft Evaluation Plan'
+);
+
+select ok(
+  public.evaluation_plan_is_valid(
+    '{"questions":[{"id":"experience","importance":"core","jev":{"type":"noul","instructions":"Is relevant experience shown?"}}]}'::jsonb
+  ),
+  'authenticated recruiter can execute Evaluation Plan validation during a Job write'
+);
+
 select lives_ok(
   $$
     insert into storage.objects (bucket_id, name)
@@ -111,6 +139,13 @@ select throws_ok(
   '42501',
   null,
   'anonymous users have no grant to read applications'
+);
+
+select throws_ok(
+  $$ select public.evaluation_plan_is_valid('{"questions":[]}'::jsonb) $$,
+  '42501',
+  null,
+  'anonymous users cannot execute internal Evaluation Plan validation'
 );
 
 select is_empty(

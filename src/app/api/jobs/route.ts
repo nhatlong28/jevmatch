@@ -48,7 +48,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Generate and review an evaluation plan first." }, { status: 400 });
   }
   const planValidation = validateEvaluationPlan(plan);
-  if (!planValidation.success) return NextResponse.json({ error: "Fix the evaluation plan before saving." }, { status: 400 });
+  if (!planValidation.success) {
+    return NextResponse.json(
+      { error: "Fix the evaluation plan before saving.", issues: planValidation.issues },
+      { status: 400 },
+    );
+  }
 
   try {
     const description = await processJobDescription(

@@ -28,9 +28,11 @@ recruiter.
 
 ## Draft editing
 
-While the Job is `draft`, the recruiter may add, edit, delete, reorder, change
-importance, switch Score/Noul, and edit Score criteria. IDs are stable and not
-directly edited in the UI.
+While the Job is `draft`, the recruiter may add, edit, and delete questions,
+change importance, switch Score/Noul, and edit or drag to reorder Score
+criteria. Question order is not directly rearranged. IDs are stable and not
+regenerated during other edits; recruiters may edit them directly, and the
+server rejects empty or duplicate IDs.
 
 - Score to Noul removes criteria while preserving ID and importance.
 - Noul to Score requires valid ordered criteria before save.

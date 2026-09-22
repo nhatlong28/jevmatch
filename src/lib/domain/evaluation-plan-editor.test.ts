@@ -18,6 +18,32 @@ const plan: EvaluationPlan = {
 };
 
 describe("evaluationPlanEditorReducer", () => {
+  it("sets a generated or loaded plan", () => {
+    expect(
+      evaluationPlanEditorReducer(null, { type: "set-plan", plan }),
+    ).toEqual(plan);
+  });
+
+  it("adds and deletes a question", () => {
+    const question = {
+      id: "communication",
+      importance: "preferred" as const,
+      jev: { type: "noul" as const, instructions: "Is communication clear?" },
+    };
+    const added = evaluationPlanEditorReducer(plan, {
+      type: "add-question",
+      question,
+    });
+
+    expect(added?.questions).toHaveLength(2);
+    expect(
+      evaluationPlanEditorReducer(added, {
+        type: "delete-question",
+        questionIndex: 0,
+      })?.questions,
+    ).toEqual([question]);
+  });
+
   it("edits a question ID without changing the rest of the question", () => {
     expect(
       evaluationPlanEditorReducer(plan, {
@@ -38,6 +64,24 @@ describe("evaluationPlanEditorReducer", () => {
     expect(next?.questions[0].jev).toEqual({
       ...plan.questions[0].jev,
       criteria: ["No evidence", "Strong evidence"],
+    });
+  });
+
+  it("edits instructions and importance", () => {
+    const withInstructions = evaluationPlanEditorReducer(plan, {
+      type: "set-question-instructions",
+      questionIndex: 0,
+      instructions: "Updated instructions",
+    });
+    const next = evaluationPlanEditorReducer(withInstructions, {
+      type: "set-question-importance",
+      questionIndex: 0,
+      importance: "required",
+    });
+
+    expect(next?.questions[0]).toMatchObject({
+      importance: "required",
+      jev: { instructions: "Updated instructions" },
     });
   });
 
@@ -62,6 +106,50 @@ describe("evaluationPlanEditorReducer", () => {
         "Exceptional evidence",
       ],
     });
+  });
+
+  it("reorders score criteria by source and target index", () => {
+    const next = evaluationPlanEditorReducer(plan, {
+      type: "reorder-criterion",
+      questionIndex: 0,
+      sourceIndex: 2,
+      targetIndex: 0,
+    });
+
+    expect(next?.questions[0].jev).toEqual({
+      ...plan.questions[0].jev,
+      criteria: ["Strong evidence", "No evidence", "Some evidence"],
+    });
+  });
+
+  it("ignores a criterion reorder outside the list boundary", () => {
+    expect(
+      evaluationPlanEditorReducer(plan, {
+        type: "reorder-criterion",
+        questionIndex: 0,
+        sourceIndex: 3,
+        targetIndex: 0,
+      }),
+    ).toEqual(plan);
+  });
+
+  it("ignores criterion actions for a noul question", () => {
+    const noulPlan: EvaluationPlan = {
+      questions: [
+        {
+          id: "work_authorization",
+          importance: "required",
+          jev: { type: "noul", instructions: "Is authorization shown?" },
+        },
+      ],
+    };
+
+    expect(
+      evaluationPlanEditorReducer(noulPlan, {
+        type: "add-criterion",
+        questionIndex: 0,
+      }),
+    ).toEqual(noulPlan);
   });
 
   it("removes criteria when changing a score question to noul", () => {

@@ -46,7 +46,7 @@ export async function POST(
       return NextResponse.json({ error: "We could not save the evaluation plan. Try again." }, { status: 500 });
     }
 
-    return NextResponse.json({ questionCount: plan.questions.length });
+    return NextResponse.json({ plan });
   } catch (error) {
     if (error instanceof EvaluationPlanGenerationError) {
       return NextResponse.json({ error: "We could not generate a valid evaluation plan. Try again." }, { status: 422 });
@@ -60,13 +60,24 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ jobId: string }> },
 ) {
-  if (!(await getCurrentRecruiter())) {
+  const recruiter = await getCurrentRecruiter();
+  if (!recruiter) {
     return NextResponse.json({ error: "Sign in to update an evaluation plan." }, { status: 401 });
   }
   const { jobId } = await context.params;
-  const body = await request.json() as { action?: string; plan?: unknown };
+  let body: { action?: string; plan?: unknown };
+  try {
+    body = await request.json() as { action?: string; plan?: unknown };
+  } catch {
+    return NextResponse.json({ error: "Submit a valid evaluation plan." }, { status: 400 });
+  }
   const validation = validateEvaluationPlan(body.plan);
-  if (!validation.success) return NextResponse.json({ error: "Fix the evaluation plan before saving." }, { status: 400 });
+  if (!validation.success) {
+    return NextResponse.json(
+      { error: "Fix the evaluation plan before saving.", issues: validation.issues },
+      { status: 400 },
+    );
+  }
   if (body.action !== "save-draft" && body.action !== "publish") {
     return NextResponse.json({ error: "Choose Save draft or Publish job." }, { status: 400 });
   }
@@ -74,7 +85,14 @@ export async function PATCH(
   const update = body.action === "publish"
     ? { evaluation_plan: validation.data, public_slug: crypto.randomUUID().replaceAll("-", "").slice(0, 12), status: "published" as const }
     : { evaluation_plan: validation.data };
-  const { data, error } = await supabase.from("jobs").update(update).eq("id", jobId).eq("status", "draft").select("id").single();
+  const { data, error } = await supabase
+    .from("jobs")
+    .update(update)
+    .eq("id", jobId)
+    .eq("recruiter_id", recruiter.id)
+    .eq("status", "draft")
+    .select("id")
+    .single();
   if (error || !data) return NextResponse.json({ error: "This draft could not be updated." }, { status: 409 });
   return NextResponse.json({ id: data.id });
 }

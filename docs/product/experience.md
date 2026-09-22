@@ -12,8 +12,8 @@ or an optional `/jobs/[jobId]/edit` route.
 - Sign in: simple Supabase email/password authentication.
 - Jobs: only the current recruiter's Jobs and a New Job action.
 - Create Job: JD input/upload followed by plan generation.
-- Evaluation Editor: add/edit/delete/reorder questions, type, importance, and
-  Score criteria while draft.
+- Evaluation Editor: add/edit/delete questions; edit type and importance; and
+  drag to reorder Score criteria while draft.
 - Publish review: plan counts and explicit immutability confirmation.
 - Published Job: public link plus applications sorted by Match Score descending.
 - Candidate application: Job context plus full name, email, CV, and confirmation.

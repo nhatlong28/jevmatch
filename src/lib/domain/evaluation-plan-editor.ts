@@ -14,7 +14,25 @@ export type EvaluationPlanEditorAction =
   | { type: "set-question-type"; questionIndex: number; questionType: "noul" | "score" }
   | { type: "set-criterion"; questionIndex: number; criterionIndex: number; criterion: string }
   | { type: "add-criterion"; questionIndex: number }
-  | { type: "delete-criterion"; questionIndex: number; criterionIndex: number };
+  | { type: "delete-criterion"; questionIndex: number; criterionIndex: number }
+  | { type: "reorder-criterion"; questionIndex: number; sourceIndex: number; targetIndex: number };
+
+function reorderItem<T>(items: T[], sourceIndex: number, targetIndex: number): T[] {
+  if (
+    sourceIndex < 0 ||
+    sourceIndex >= items.length ||
+    targetIndex < 0 ||
+    targetIndex >= items.length ||
+    sourceIndex === targetIndex
+  ) {
+    return items;
+  }
+
+  const next = [...items];
+  const [item] = next.splice(sourceIndex, 1);
+  next.splice(targetIndex, 0, item);
+  return next;
+}
 
 function updateQuestion(
   plan: EvaluationPlan,
@@ -123,6 +141,22 @@ export function evaluationPlanEditorReducer(
                 ...question.jev,
                 criteria: question.jev.criteria.filter(
                   (_, index) => index !== action.criterionIndex,
+                ),
+              },
+            }
+          : question,
+      );
+    case "reorder-criterion":
+      return updateQuestion(plan, action.questionIndex, (question) =>
+        question.jev.type === "score"
+          ? {
+              ...question,
+              jev: {
+                ...question.jev,
+                criteria: reorderItem(
+                  question.jev.criteria,
+                  action.sourceIndex,
+                  action.targetIndex,
                 ),
               },
             }

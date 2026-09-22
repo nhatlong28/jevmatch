@@ -57,7 +57,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 2. [complete] Phase 02 — Supabase recruiter authentication.
 3. [complete] Phase 03 — draft Job and JD processing.
 4. [complete] Phase 04 — OpenAI Evaluation Plan draft generation.
-5. [pending] Phase 05 — Evaluation Editor.
+5. [complete] Phase 05 — Evaluation Editor.
 6. [pending] Phase 06 — publish, immutable plan, public slug, and close.
 7. [pending] Phase 07 — public candidate application and CV processing.
 8. [pending] Phase 08 — TypeSafe/Jev evaluation.
@@ -179,3 +179,15 @@ change, and unfinished work stays documented here until its validation passes.
   typecheck, lint, production build, and the authenticated browser interaction
   pass; linked Supabase tests were intentionally skipped per product-owner
   direction.
+- 2026-09-22: Completed Phase 05. Saved drafts are listed under `/jobs` and
+  reopen into the shared typed Evaluation Plan editor. Questions support
+  add/edit/delete, Score criteria support drag-to-reorder, type changes preserve
+  the accepted transition rules, fixed importance weights remain visible, and client/server
+  validation returns field-specific issues. Migration `20260922062710` fixes
+  authenticated trigger execution without granting anonymous access and is
+  applied to Supabase Cloud. Unit tests (35), typecheck, lint, production build,
+  and authenticated desktop/mobile browser flows pass, including invalid-field
+  feedback and Save draft -> reopen -> edit -> save -> reload persistence.
+  Linked pgTAP was intentionally not run per product-owner direction; the new
+  positive/negative authorization cases remain checked in for the next allowed
+  database test run.
