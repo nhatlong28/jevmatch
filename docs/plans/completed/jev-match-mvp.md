@@ -62,7 +62,7 @@ The packet index in `docs/stories/README.md` owns phase order and exit gates.
 7. [complete] Phase 07 — public candidate application and CV processing.
 8. [complete] Phase 08 — TypeSafe/Jev evaluation.
 9. [complete] Phase 09 — deterministic normalization and scoring.
-10. [pending] Phase 10 — data-backed recruiter dashboard and candidate review.
+10. [complete] Phase 10 — data-backed recruiter dashboard and candidate review.
 
 Cross-phase visual work is complete as a prototype and preserved for reuse. It
 does not advance a packet's status without that packet's behavior-level proof.
@@ -240,3 +240,14 @@ change, and unfinished work stays documented here until its validation passes.
   production build, diff checks, anonymous browser redirect, and signed-URL
   authorization tests pass. Authenticated browser review remains pending
   provisioned recruiter credentials in this environment.
+- 2026-09-22: Completed Phase 10 authenticated browser QA with a temporary
+  provisioned recruiter and isolated published Job. Desktop and narrow/mobile
+  views confirmed recruiter-owned Jobs, application counts, Match Score-first
+  ordering, processing and failed neutral states, candidate evidence detail,
+  and responsive layout. The public application view exposed no recruiter
+  score/detail data. Opening the original CV produced an ownership-checked
+  Supabase signed URL with a five-minute expiry. Temporary recruiter, Job,
+  applications, and resume object were removed after verification. Full tests
+  (63), typecheck, lint, production build, and diff checks passed; pgTAP was
+  intentionally skipped per product-owner instruction because Docker/Supabase
+  test environment was unavailable.
