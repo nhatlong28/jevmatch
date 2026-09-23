@@ -45,7 +45,7 @@ function AccountSummary({ email }: { email: string | null }) {
         <ChevronRightIcon aria-hidden="true" className="size-4 text-muted-foreground" />
       </Link>
       <form action={signOut} className="mt-2">
-        <Button className="w-full justify-start" size="sm" type="submit" variant="ghost">
+        <Button className="w-full justify-start" size="sm" type="submit" variant="outline">
           <LogOutIcon data-icon="inline-start" />
           Sign out
         </Button>
@@ -81,8 +81,8 @@ function NavigationLinks({ active }: Pick<RecruiterShellProps, "active">) {
 
 export function RecruiterShell({ active, children, email }: RecruiterShellProps) {
   return (
-    <div className="min-h-screen bg-background p-3 sm:p-4 lg:grid lg:grid-cols-[248px_minmax(0,1fr)] lg:gap-4">
-      <aside className="hidden min-h-[calc(100vh-2rem)] flex-col rounded-[18px] border bg-surface p-4 lg:flex">
+    <div className="min-h-screen bg-background p-3 sm:p-4 lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-0 lg:p-0">
+      <aside className="hidden min-h-screen flex-col rounded-none border-y-0 border-l-0 border-r bg-surface p-4 lg:flex">
         <div className="px-2 pt-2 pb-10">
           <JevMatchBrand />
         </div>
@@ -108,7 +108,7 @@ export function RecruiterShell({ active, children, email }: RecruiterShellProps)
             </div>
           </details>
         </header>
-        <main className="mx-auto max-w-[1440px] px-1 pb-8 lg:px-4 lg:pt-4">{children}</main>
+        <main className="mx-auto max-w-[1440px] px-1 pb-8 lg:px-8 lg:py-7">{children}</main>
       </div>
     </div>
   );

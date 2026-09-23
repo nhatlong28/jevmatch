@@ -2,10 +2,14 @@
 
 ## Data model
 
-`jobs` owns title, recruiter ID, original JD path/text, Evaluation Plan, unique
-public slug, lifecycle status, and timestamps. `applications` owns Job ID,
-candidate name/email, original CV path/text, Match Score, evaluations, processing
-status, and timestamps.
+`jobs` owns title, optional location, recruiter ID, original JD path/text,
+Evaluation Plan, unique public slug, lifecycle status, and timestamps.
+`applications` owns Job ID, candidate name/email, original CV path/text, Match
+Score, evaluations, processing status, first-view timestamp, reviewed timestamp,
+and timestamps. Review status is derived: `reviewed_at` means Reviewed;
+otherwise `first_viewed_at` means In review; neither means New. Marking reviewed
+requires that the recruiter has opened the application. Reopening a reviewed
+application does not clear its reviewed timestamp.
 
 Applications derive recruiter ownership through `applications.job_id ->
 jobs.recruiter_id`; they do not duplicate recruiter ID.

@@ -26,6 +26,7 @@ import {
 export type DashboardJob = {
   candidates: number;
   id: string;
+  location: string | null;
   status: "draft" | "published" | "closed";
   title: string | null;
   updatedAt: string;
@@ -53,9 +54,8 @@ export function JobsDashboard({ jobs }: JobsDashboardProps) {
     const normalizedQuery = query.trim().toLocaleLowerCase();
 
     return jobs.filter((job) => {
-      const matchesQuery = !normalizedQuery || (job.title ?? "Untitled job")
-        .toLocaleLowerCase()
-        .includes(normalizedQuery);
+      const searchable = `${job.title ?? "Untitled job"} ${job.location ?? ""}`.toLocaleLowerCase();
+      const matchesQuery = !normalizedQuery || searchable.includes(normalizedQuery);
       const matchesStatus = status === "all" || job.status === status;
 
       return matchesQuery && matchesStatus;
@@ -111,7 +111,7 @@ export function JobsDashboard({ jobs }: JobsDashboardProps) {
                     {job.title ?? "Untitled job"}
                   </Link>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {job.status === "draft" ? "Evaluation plan in progress" : "Evaluation plan locked"}
+                    {[job.location, job.status === "draft" ? "Evaluation plan in progress" : "Evaluation plan locked"].filter(Boolean).join(" · ")}
                   </p>
                 </TableCell>
                 <TableCell>
@@ -142,6 +142,7 @@ export function JobsDashboard({ jobs }: JobsDashboardProps) {
                 <Link className="font-medium hover:text-primary hover:underline" href={`/jobs/${job.id}`}>
                   {job.title ?? "Untitled job"}
                 </Link>
+                {job.location ? <p className="mt-1 text-xs text-muted-foreground">{job.location}</p> : null}
                 <p className="mt-1 text-sm text-muted-foreground">Updated {formatDate(job.updatedAt)}</p>
               </div>
               <Badge variant={job.status === "published" ? "success" : "neutral"}>

@@ -20,6 +20,7 @@ export type Job = {
   id: string;
   recruiterId: string;
   title: string | null;
+  location: string | null;
   jdFilePath: string | null;
   jdText: string | null;
   evaluationPlan: EvaluationPlan | null;
@@ -39,6 +40,8 @@ export type Application = {
   matchScore: number | null;
   evaluations: EvaluationResult[] | null;
   status: ApplicationStatus;
+  firstViewedAt: string | null;
+  reviewedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };

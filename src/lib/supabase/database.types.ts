@@ -38,9 +38,11 @@ export type Database = {
           candidate_name: string
           created_at: string
           evaluations: Json | null
+          first_viewed_at: string | null
           id: string
           job_id: string
           match_score: number | null
+          reviewed_at: string | null
           resume_file_path: string
           resume_text: string | null
           status: Database["public"]["Enums"]["application_status"]
@@ -51,9 +53,11 @@ export type Database = {
           candidate_name: string
           created_at?: string
           evaluations?: Json | null
+          first_viewed_at?: string | null
           id?: string
           job_id: string
           match_score?: number | null
+          reviewed_at?: string | null
           resume_file_path: string
           resume_text?: string | null
           status?: Database["public"]["Enums"]["application_status"]
@@ -64,9 +68,11 @@ export type Database = {
           candidate_name?: string
           created_at?: string
           evaluations?: Json | null
+          first_viewed_at?: string | null
           id?: string
           job_id?: string
           match_score?: number | null
+          reviewed_at?: string | null
           resume_file_path?: string
           resume_text?: string | null
           status?: Database["public"]["Enums"]["application_status"]
@@ -89,6 +95,7 @@ export type Database = {
           id: string
           jd_file_path: string | null
           jd_text: string | null
+          location: string | null
           public_slug: string | null
           recruiter_id: string
           status: Database["public"]["Enums"]["job_status"]
@@ -101,6 +108,7 @@ export type Database = {
           id?: string
           jd_file_path?: string | null
           jd_text?: string | null
+          location?: string | null
           public_slug?: string | null
           recruiter_id: string
           status?: Database["public"]["Enums"]["job_status"]
@@ -113,6 +121,7 @@ export type Database = {
           id?: string
           jd_file_path?: string | null
           jd_text?: string | null
+          location?: string | null
           public_slug?: string | null
           recruiter_id?: string
           status?: Database["public"]["Enums"]["job_status"]
@@ -131,6 +140,7 @@ export type Database = {
         Args: { requested_slug: string }
         Returns: {
           id: string
+          location: string | null
           public_slug: string
           title: string
         }[]

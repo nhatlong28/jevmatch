@@ -130,11 +130,11 @@ uses a public shell with:
 The public shell shares typography, colors, control height, focus behavior, and
 error conventions with the recruiter shell, but not its navigation or data.
 
-### Minimal rounded sidebar
+### Full-height square sidebar
 
-The sidebar is a quiet navigation rail, not a second dashboard. Use a single
-rounded surface with generous internal whitespace, two primary destinations, and
-one account control:
+The sidebar is a quiet navigation rail, not a second dashboard. Use a full-height
+square-edged white rail with generous internal whitespace, two primary
+destinations, and one account control:
 
 ```text
 ┌────────────────────────┐
@@ -151,8 +151,8 @@ one account control:
 └────────────────────────┘
 ```
 
-- Sidebar surface: `surface`, one subtle border, 18px outer radius, no heavy
-  shadow.
+- Sidebar surface: `surface`, one subtle divider, square outer corners, no heavy
+  shadow; fill the desktop viewport height.
 - Sidebar padding: 16px; gap between navigation items: 8px.
 - Navigation item height: 44px, 12px radius, icon plus sentence-case label.
 - Active item: `primary-soft` background with cobalt text and icon; avoid a
@@ -208,9 +208,9 @@ an icon.
 ### Spacing and shape
 
 - Base spacing unit: 4px. Prefer 8, 12, 16, 24, 32, and 48px steps.
-- App sidebar: 248px desktop width with an 18px outer radius.
+- App sidebar: 260px desktop width, full-height, square outer corners.
 - Main content: 32px desktop inset, 24px tablet, 16px mobile.
-- Work surfaces: 14px radius; sidebar: 18px radius; navigation items: 12px
+- Work surfaces: 14px radius; navigation items: 12px
   radius; controls: 10px radius.
 - Buttons are 40px high by default and 36px when compact.
 - Use one-pixel borders. Avoid nested bordered containers without a functional
@@ -350,10 +350,15 @@ create an unsupported standalone Applications navigation destination.
 
 ### Create job
 
-Use the same recruiter shell and page header as the dashboard. The main content
-is a wide role-details and Job Description form with a narrow validation rail.
+Use the same recruiter shell and page header as the dashboard, with `Save draft`
+and `Generate evaluation plan` actions in the header. Saving before generation
+creates a draft with the Job Description; recruiters can generate its plan later.
+After reviewing a generated plan and confirming its immutability, `Publish job`
+publishes the role directly.
+The main content is a wide role-details and Job Description form with a narrow
+validation rail.
 Role details are limited to the supported Job context: a required Job title and
-the existing optional location value, when available. Do not add the concept's
+location. Location is optional on legacy Jobs. Do not add the concept's
 `Department` or `Employment type` fields; they are sample content outside the
 MVP contract. Support pasted text and file upload as alternate inputs. Explain
 that generation produces an editable draft and occurs server-side. The user
@@ -378,22 +383,23 @@ not be implemented. Candidates never see match scores.
 
 ### Applications and candidate detail
 
-The published/closed Job workspace is the ranking surface. On wide screens, pair
-the application table with a selected-candidate inspector when the viewport can
-support it. On narrower screens, navigate to a full candidate-detail page.
+The published/closed Job workspace is the ranking surface. Pair the application
+table with a selected-candidate inspector; on narrower screens, keep the inspector
+inline below the table rather than navigating to a separate page.
 
 The navigation sequence must remain obvious:
 
 ```text
-Jobs → Job workspace → Applications ranking → Candidate detail
+Jobs → Job workspace → select application → inline evidence inspector
 ```
 
-The ranking surface contains Candidate, Match Score, Status, and Applied. A
-candidate row opens detail; the candidate's name is the link, not the entire row,
-so the interaction remains accessible and predictable. Preserve filter and
-selection state when returning to the list. Do not copy the concept's LinkedIn,
-location, qualitative evidence badge, or review-status fields into the MVP list
-unless the persisted product contract gains those fields.
+The ranking surface contains Candidate, Match Score, Criteria evidence, Applied,
+and Review status. Selecting the candidate opens the inspector in place and
+records its first view. Derive review status as New (never opened), In review
+(opened but not marked reviewed), or Reviewed (explicitly marked reviewed);
+reopening a reviewed application does not reset it. Provide Mark as reviewed
+immediately before Open original CV. Do not copy the concept's LinkedIn,
+candidate location, or qualitative evidence labels into the MVP list.
 
 Candidate detail starts with identity and status, then a neutral Match Score,
 then criterion evidence, and finally the original CV action. It should feel like

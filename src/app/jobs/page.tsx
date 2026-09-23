@@ -17,7 +17,7 @@ export default async function JobsPage() {
   const supabase = await createClient();
   const { data: jobs } = await supabase
     .from("jobs")
-    .select("id, status, title, updated_at")
+    .select("id, status, title, location, updated_at")
     .eq("recruiter_id", recruiter.id)
     .order("updated_at", { ascending: false });
   const jobIds = jobs?.map((job) => job.id) ?? [];
@@ -69,6 +69,7 @@ export default async function JobsPage() {
           jobs={jobs.map((job) => ({
             candidates: applicationCounts.get(job.id) ?? 0,
             id: job.id,
+            location: job.location,
             status: job.status,
             title: job.title,
             updatedAt: job.updated_at,

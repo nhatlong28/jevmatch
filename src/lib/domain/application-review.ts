@@ -9,7 +9,20 @@ export type ApplicationListItem = {
   match_score: number | null;
   status: "processing" | "evaluated" | "failed";
   created_at: string;
+  first_viewed_at?: string | null;
+  reviewed_at?: string | null;
 };
+
+export type ApplicationReviewStatus = "new" | "in_review" | "reviewed";
+
+export function applicationReviewStatus(application: {
+  first_viewed_at: string | null;
+  reviewed_at: string | null;
+}): ApplicationReviewStatus {
+  if (application.reviewed_at) return "reviewed";
+  if (application.first_viewed_at) return "in_review";
+  return "new";
+}
 
 export function orderApplications<T extends ApplicationListItem>(applications: T[]) {
   return [...applications].sort((left, right) => {

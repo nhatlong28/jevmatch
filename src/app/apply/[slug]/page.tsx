@@ -35,6 +35,7 @@ export default async function PublicJobPage({
               <h1 className="mt-1 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
                 {job.title ?? "Open role"}
               </h1>
+              {job.location ? <p className="mt-2 text-sm text-muted-foreground">{job.location}</p> : null}
             </div>
           </div>
           <p className="mt-6 max-w-2xl text-[15px] leading-6 text-muted-foreground">
